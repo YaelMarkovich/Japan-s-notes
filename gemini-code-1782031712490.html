@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>כרטיסיות יפן שלי</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        :root {
+            --bg-color: #f7f9fc;
+            --card-bg: #ffffff;
+            --primary-color: #e63946;
+            --text-dark: #1d3557;
+            --text-muted: #6c757d;
+            --accent-color: #4a90e2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .app-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .card-wrapper {
+            width: 100%;
+            max-width: 400px;
+            height: 480px;
+            perspective: 1000px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-radius: 20px;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            background-color: var(--card-bg);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto;
+        }
+
+        .card-front {
+            border: 2px solid #e2e8f0;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            border: 2px solid var(--primary-color);
+        }
+
+        .card-back-content {
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .japanese-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #000;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            direction: ltr;
+        }
+
+        .romaji-text {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            text-align: center;
+            font-style: italic;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .hebrew-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: right;
+        }
+
+        .hebrew-desc {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+            text-align: right;
+            flex: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+
+        button {
+            background-color: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.2s;
+        }
+
+        button:active {
+            background-color: #2c4a75;
+        }
+
+        .flip-btn {
+            background-color: var(--primary-color);
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .flip-btn-back {
+            background-color: var(--text-dark);
+            width: 100%;
+            margin-top: 20px;
+            font-family: sans-serif;
+        }
+
+        .counter {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .hint {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>כרטיסיות יפן שלי 🇯🇵</header>
+
+    <div class="app-container">
+        <div class="card-wrapper" onclick="flipCard()">
+            <div class="card" id="card">
+                <div class="card-face card-front">
+                    <div>
+                        <div class="hebrew-title" id="heb-title">טוען...</div>
+                        <div class="hebrew-desc" id="heb-desc"></div>
+                    </div>
+                    <button class="flip-btn">הצג ביפנית 🔄</button>
+                </div>
+
+                <div class="card-face card-back">
+                    <div class="card-back-content">
+                        <div class="japanese-text" id="jap-text"></div>
+                        <div class="romaji-text" id="rom-text"></div>
+                    </div>
+                    <button class="flip-btn-back" style="direction: rtl;">חזרה לעברית 🔄</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="counter" id="card-counter"></div>
+        <div class="hint">לחצי על הכרטיסייה כדי להפוך אותה</div>
+
+        <div class="nav-buttons">
+            <button onclick="event.stopPropagation(); prevCard();">→ הקודם</button>
+            <button onclick="event.stopPropagation(); nextCard();">הבא ←</button>
+        </div>
+    </div>
+
+    <script>
+        const cardsData = [
+            {
+                title: "🥗 צמחונות",
+                hebrew: "אני צמחונית. אני אוכלת ביצים ומוצרי חלב. לא אוכלת דגים, בשר ועוף (כולל צירי מרק ורטבים העשויים מהם).",
+                japanese: "私はベジタリアンです。卵と乳製品は食べられますが、肉、鶏肉、魚介類（出汁を含む）は一切食べられません。よろしくお願いいたします。",
+                romaji: "Watashi wa bejitarian desu. Tamago to nyūseihin wa taberaremasu ga, niku, toriniku, gyokairui (dashi o fukumu) wa issai taberaremasen. Yoroshiku onegai itashimasu."
+            },
+            {
+                title: "🌾 רגישות לגלוטן",
+                hebrew: "יש לי רגישות לגלוטן. אינני יכולה לאכול חיטה, שעורה, שיפון או רוטב סויה רגיל.",
+                japanese: "私はグルテンアレルギーです。小麦、大麦、ライ麦、また通常の醤油も食べられません。ご配慮をお願いいたします。",
+                romaji: "Watashi wa guruten arerugī desu. Komugi, ōmugi, raimugi, mata tsūjō no shōyu mo taberaremasen. Gohairyō o onegai itashimasu."
+            },
+            {
+                title: "🥛 העדפה לחלב סויה/שקדים",
+                hebrew: "אני מעדיפה חלב סויה או חלב שקדים. האם תוכלו להכין זאת עם חלב סויה או שקדים במקום חלב רגיל, בבקשה?",
+                japanese: "豆乳かアーモンドミルクを希望しています。普通の牛乳の代わりに、豆乳かアーモンドミルクで作っていただけますでしょうか？",
+                romaji: "Tōnyū ka āmondomiruku o kibō shite imasu. Futsū no gyūnyū no kawari ni, tōnyū ka āmondomiruku de tsukutte itadakemasu deshō ka?"
+            },
+            {
+                title: "👦 מוצרי חלב (אלרגיה לילד)",
+                hebrew: "לילד בן ה-4 יש אלרגיה חמורה למוצרי חלב. אסור לו לאכול חלב, חמאה, גבינה או שמנת (זה מסכן חיים).",
+                japanese: "この4歳の子供は乳製品に重度のアレルギーがあります。牛乳、バター、チーズ、生クリームなどは一切食べられません（命に関わります）。よろしくお願いいたします。",
+                romaji: "Kono 4-sai no kodomo wa nyūseihin ni jūdo no arerugī ga arimasu. Gyūnyū, batā, chīzu, namakurīmu nado wa issai taberaremasen (inochi ni kakawarimasu). Yoroshiku onegai itashimasu."
+            }
+        ];
+
+        let currentIndex = 0;
+        const cardElement = document.getElementById('card');
+
+        function flipCard() {
+            cardElement.classList.toggle('flipped');
+        }
+
+        function updateCard() {
+            cardElement.classList.remove('flipped');
+            setTimeout(() => {
+                const current = cardsData[currentIndex];
+                document.getElementById('heb-title').innerText = current.title;
+                document.getElementById('heb-desc').innerText = current.hebrew;
+                document.getElementById('jap-text').innerText = current.japanese;
+                document.getElementById('rom-text').innerText = current.romaji;
+                document.getElementById('card-counter').innerText = `${currentIndex + 1} / ${cardsData.length}`;
+            }, 150);
+        }
+
+        function nextCard() {
+            currentIndex = (currentIndex + 1) % cardsData.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentIndex = (currentIndex - 1 + cardsData.length) % cardsData.length;
+            updateCard();
+        }
+        
+        updateCard();
+    </script>
+</body>
+</html>
